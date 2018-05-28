@@ -59,6 +59,50 @@ public class Core {
 		}
 		return prediction;
 	}
+	
+	public double[] itemToItemRecommendation(int itemID, String method) {
+		PriorityQueue<ContainerClass> pq = new PriorityQueue<ContainerClass>(new pqComparator());
+		double score;
+		//calculation of r for user with UserID
+		for(int itID=0; itID < usersNumber; itID++) {
+			if(itID != itemID) {
+				int[] itemData1 = new int[itemsNumber];
+				int[] itemData2 = new int[itemsNumber];
+				for(int user=0;user<usersNumber;user++) {
+					itemData1[user] = data[user][itemID];
+					itemData2[user] = data[user][itID];
+				}
+				score = calc.calculateSimilarity(itemData1, itemData2, method);
+				pq.add(new ContainerClass(itID, score));
+			}
+		}
+		if(kneighs > pq.size()) {
+			System.err.println("Core.java->itemToItemRecommendation>kneighs>pq.size()");
+			System.exit(4);
+		}
+		ArrayList<ContainerClass> kclosest = new ArrayList<ContainerClass>();
+		for(int i=0;i<kneighs;i++) {
+			kclosest.add(pq.poll());
+		}
+
+		double[] prediction = new double[usersNumber];
+		for(int user=0; user< itemsNumber;user++) {
+			double tempScore = 0;
+			int availableScores = 0;
+
+			for(ContainerClass neighbor : kclosest) {
+				if(data[user][neighbor.getID()] != 0) {
+					tempScore += (double)data[user][neighbor.getID()] * neighbor.getScore();
+					availableScores++;
+				}
+			}
+			double result = tempScore / (double)availableScores;
+			BigDecimal bd = new BigDecimal(result);
+			result = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
+			prediction[user] = result;	
+		}
+		return prediction;
+	}
 
 	class ContainerClass {
 		int ID;
@@ -88,61 +132,4 @@ public class Core {
 			return 0;
 		}
 	}
-
-
-	public double[] itemToItemRecommendation(int itemID, String method) {
-		PriorityQueue<ContainerClass> pq = new PriorityQueue<ContainerClass>(new pqComparator());
-		double score;
-		//calculation of r for user with UserID
-		for(int itID=0; itID < usersNumber; itID++) {
-			if(itID != itemID) {
-				int[] itemData1 = new int[itemsNumber];
-				int[] itemData2 = new int[itemsNumber];
-				for(int user=0;user<usersNumber;user++) {
-					itemData1[user] = data[user][itemID];
-					itemData2[user] = data[user][itID];
-				}
-				score = calc.calculateSimilarity(itemData1, itemData2, method);
-				pq.add(new ContainerClass(itID, score));
-			}
-		}
-		if(kneighs > pq.size()) {
-			System.err.println("Core.java->itemToItemRecommendation>kneighs>pq.size()");
-			System.exit(4);
-		}
-		ArrayList<ContainerClass> kclosest = new ArrayList<ContainerClass>();
-		for(int i=0;i<kneighs;i++) {
-			kclosest.add(pq.poll());
-		}
-
-		double[] prediction = new double[20];
-		for(int item=0; item< itemsNumber;item++) {
-			double tempScore = 0;
-			int availableScores = 0;
-
-			for(ContainerClass neighbor : kclosest) {
-				if(data[neighbor.getID()][item] != 0) {
-					tempScore += (double)data[neighbor.getID()][item] * neighbor.getScore();
-					availableScores++;
-				}
-			}
-			double result = tempScore / (double)availableScores;
-			BigDecimal bd = new BigDecimal(result);
-			result = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
-			prediction[item] = result;	
-		}
-		return prediction;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
 }

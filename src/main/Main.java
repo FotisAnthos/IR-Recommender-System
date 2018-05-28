@@ -31,7 +31,7 @@ public class Main {
 			//Core theCore = new Core(T, N, M, X, K);
 		}
 		else {
-			input_path = "C:\\Users\\fotis\\eclipse-workspace\\IR Recommender System\\input1.txt";
+			input_path = System.getProperty("user.dir") + "\\input1.txt";
 			IOHandle io  = new IOHandle(input_path);
 			ArrayList<Integer> conf = io.retrieve();
 			int iterations = conf.get(0);
