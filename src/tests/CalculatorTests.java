@@ -1,14 +1,14 @@
 package tests;
 
 import main.*;
-import static org.junit.jupiter.api.Assertions.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
 import org.junit.jupiter.api.Test;
 
-class CalculatorTests {
+
+class CalculatorTests{
 	
 	@Test
 	void testJaccardSimilarity() {

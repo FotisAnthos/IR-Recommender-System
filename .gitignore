@@ -1,3 +1,8 @@
 
 .classpath
 .class
+*.class
+*.prefs
+*.class
+*.ini
+*.txt
