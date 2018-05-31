@@ -17,8 +17,8 @@ public class IOHandle {
 
 	private String input_path; 
 	private String output_path;
-	int usersNumber;
-	int itemsNumber;;
+	private int usersNumber;
+	private int itemsNumber;;
 
 	public IOHandle(String input_path) {
 		this.input_path = input_path;
@@ -63,7 +63,7 @@ public class IOHandle {
 		return data;
 	}
 
-	public boolean writeMatrix(double[][] data, String description) {
+	public boolean writeMatrix(double[][] data, String folder, String description) {
 		List<String> lines = new ArrayList<String>();
 
 		for(int user=0; user<usersNumber;user++) {
@@ -73,33 +73,11 @@ public class IOHandle {
 			}
 			lines.add(sb.toString());
 		}
-		StringBuilder output = new StringBuilder(output_path);
-		output.append("\\"+description+".txt");
-		Path file = Paths.get(output.toString());
-		try {
-			Files.write(file, lines, Charset.forName("UTF-8"));
-			return true;
-		} catch (IOException e) {
-			System.err.println("IOHandle could not write to output file!!!");
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	public boolean writeMatrix(int[][] data, String folder, String name) {
-		List<String> lines = new ArrayList<String>();
 
-		for(int user=0; user<usersNumber;user++) {
-			StringBuilder sb = new StringBuilder(50);
-			for(int item=0; item<itemsNumber;item++) {
-				sb.append(data[user][item] + " ");
-			}
-			lines.add(sb.toString());
-		}
 		StringBuilder output = new StringBuilder(output_path);
-		output.append("\\"+folder);
+		output.append(folder);
 		new File(output.toString()).mkdirs();
-		output.append("\\"+name+".txt");
+		output.append("\\"+ description +".txt");
 		Path file = Paths.get(output.toString());
 		try {
 			Files.write(file, lines, Charset.forName("UTF-8"));
@@ -111,6 +89,40 @@ public class IOHandle {
 		}
 	}
 
+	public boolean writeInitialMatrix(int[][] data, String folder, String description) {
+		List<String> lines = new ArrayList<String>();
 
+		for(int user=0; user<usersNumber;user++) {
+			StringBuilder sb = new StringBuilder(50);
+			for(int item=0; item<itemsNumber;item++) {
+				sb.append(data[user][item] + " ");
+			}
+			lines.add(sb.toString());
+		}
 
+		StringBuilder output = new StringBuilder(output_path);
+		output.append(folder);
+		new File(output.toString()).mkdirs();
+		output.append("\\"+ description +".txt");
+		Path file = Paths.get(output.toString());
+		try {
+			Files.write(file, lines, Charset.forName("UTF-8"));
+			return true;
+		} catch (IOException e) {
+			System.err.println("IOHandle could not write to output file!!!");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public void Initializer() {
+		StringBuilder output = new StringBuilder(output_path);
+		output.append("\\results");
+		this.output_path = output.toString();
+		new File(output.toString()).mkdirs();
+	}
+
+	public String getOutput_path() {
+		return output_path;
+	}
 }

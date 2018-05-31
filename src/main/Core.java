@@ -13,13 +13,23 @@ public class Core {
 	private int usersNumber;
 	private int itemsNumber;
 	private int kneighs;
+	private IOHandle io;
 
-	public Core(int usersNumber, int itemsNumber, int kneights, int[][] data) {
+	public Core(int usersNumber, int itemsNumber, int kneights, int[][] data, IOHandle io) {
 		this.calc = new Calculator();
 		this.data = data;
 		this.usersNumber = usersNumber;
 		this.itemsNumber = itemsNumber;
-		this.kneighs = kneights;		
+		this.kneighs = kneights;
+		this.io = io;
+	}
+
+	public void userCollaborativeFiltering() {
+
+	}
+
+	public void itemCollaborativeFiltering() {
+
 	}
 
 	public double[] userToUserRecommendation(int userID, String method) {
@@ -41,15 +51,17 @@ public class Core {
 			kclosest.add(pq.poll());
 		}
 
-		double[] prediction = new double[itemsNumber];
-		for(int item=0; item< itemsNumber; item++) {
+		double[] prediction = new double[itemsNumber];//used to store the rating prediction about all the items for a specific user with userID
+		for(int item=0; item< itemsNumber; item++) {//for every item calculate a possible rating
 			double tempScore = 0;
 			int availableScores = 0;
 
 			for(ContainerClass neighbor : kclosest) {
-				if(data[neighbor.getID()][item] != 0) {
-					tempScore += (double)data[neighbor.getID()][item] * neighbor.getScore();
-					availableScores++;
+				if(neighbor.getID() != userID) {
+					if(data[neighbor.getID()][item] != 0) {
+						tempScore += (double)data[neighbor.getID()][item] * neighbor.getScore();
+						availableScores++;
+					}
 				}
 			}
 			double result = tempScore / (double)availableScores;
@@ -59,48 +71,58 @@ public class Core {
 		}
 		return prediction;
 	}
-	
-	public double[] itemToItemRecommendation(int itemID, String method) {
+
+	public double[] itemToItemRecommendation(int userID, String method) {
+		double[] predictions = new double[itemsNumber];
+		for(int item=0; item < itemsNumber; item++) {
+			predictions[item] = itemToItemRecommendationForONEitem(item, userID,method);
+		}
+		return predictions;
+	}
+
+	public double itemToItemRecommendationForONEitem(int itemID, int userID, String method) {
 		PriorityQueue<ContainerClass> pq = new PriorityQueue<ContainerClass>(new pqComparator());
 		double score;
-		//calculation of r for user with UserID
-		for(int itID=0; itID < usersNumber; itID++) {
-			if(itID != itemID) {
-				int[] itemData1 = new int[itemsNumber];
-				int[] itemData2 = new int[itemsNumber];
-				for(int user=0;user<usersNumber;user++) {
-					itemData1[user] = data[user][itemID];
-					itemData2[user] = data[user][itID];
+		//calculation of r for item with UserID
+		for(int itID=0; itID < itemsNumber; itID++) {//for every item
+			if(itID != itemID) {//except for the one we are interested in
+				int[] itemData1 = new int[usersNumber];//start empty arrays that will contain all the
+				int[] itemData2 = new int[usersNumber];//-ratings from users
+				for(int user=0; user<usersNumber; user++) {
+					if(user != userID) {
+						itemData1[user] = data[user][itemID];//store the rating of user about the item we are interested in
+						itemData2[user] = data[user][itID];//store the rating of the second item to calculate its similarity with the item we are interested in 
+					}//itemData[user] -> because every item can have ratings from all the users
 				}
 				score = calc.calculateSimilarity(itemData1, itemData2, method);
 				pq.add(new ContainerClass(itID, score));
 			}
 		}
+
 		if(kneighs > pq.size()) {
-			System.err.println("Core.java->itemToItemRecommendation>kneighs>pq.size()");
+			System.err.println("Core.java->itemToItemRecommendationForONEitem>kneighs>pq.size()");
 			System.exit(4);
 		}
 		ArrayList<ContainerClass> kclosest = new ArrayList<ContainerClass>();
-		for(int i=0;i<kneighs;i++) {
+		for(int i=0;i<kneighs;i++) {//make a list just with the neighbors
 			kclosest.add(pq.poll());
 		}
 
-		double[] prediction = new double[usersNumber];
-		for(int user=0; user< itemsNumber;user++) {
-			double tempScore = 0;
-			int availableScores = 0;
+		double prediction;
+		double tempScore = 0;
+		int availableScores = 0;
 
-			for(ContainerClass neighbor : kclosest) {
-				if(data[user][neighbor.getID()] != 0) {
-					tempScore += (double)data[user][neighbor.getID()] * neighbor.getScore();
-					availableScores++;
-				}
+		for(ContainerClass neighbor : kclosest) {
+			if(neighbor.getID() != itemID) {
+				tempScore += (double)data[userID][neighbor.getID()] * neighbor.getScore();
+				availableScores++;
 			}
-			double result = tempScore / (double)availableScores;
-			BigDecimal bd = new BigDecimal(result);
-			result = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
-			prediction[user] = result;	
 		}
+		double result = tempScore / (double)availableScores;
+		BigDecimal bd = new BigDecimal(result);
+		result = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
+		prediction = result;	
+
 		return prediction;
 	}
 

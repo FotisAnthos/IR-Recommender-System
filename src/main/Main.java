@@ -19,13 +19,14 @@ public class Main {
 			int itemsNumber = conf.get(2);
 			int percentage = conf.get(3);
 			int kneights = conf.get(4);
+			
 			Generator generator = new Generator(usersNumber, itemsNumber, percentage);
-			//TODO instead of putting results in categorized folders, put them grouped together according to the iteration 
+			//TODO(maybe) instead of putting results in categorized folders, put them grouped together according to the iteration 
 			for(int iteration=0; iteration<iterations; iteration++) {
 				int data[][] = generator.newMatrix();
-				String name = "Matrix" + iteration;
-				String folder = "InitialMatrices\\";
-				io.writeMatrix(data, folder, name);
+				String folder = "\\Iteration"+ iteration;
+				String description = "\\InitialMatrix" + iteration;
+				io.writeInitialMatrix(data, folder, description);
 				//Core theCore = new Core(usersNumber, itemsNumber, kneights, data);
 			}
 			//Core theCore = new Core(T, N, M, X, K);
@@ -43,9 +44,9 @@ public class Main {
 			
 			for(int iteration=0; iteration<iterations; iteration++) {
 				int data[][] = generator.newMatrix();
-				String name = "Matrix" + iteration;
-				String folder = "InitialMatrices\\";
-				io.writeMatrix(data, folder, name);
+				String folder = "\\Iteration"+ iteration;
+				String description = "\\InitialMatrix" + iteration;
+				io.writeInitialMatrix(data, folder, description);
 				//Core theCore = new Core(usersNumber, itemsNumber, kneights, data);
 			}
 		}

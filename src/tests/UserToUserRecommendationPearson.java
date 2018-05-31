@@ -35,10 +35,10 @@ class UserToUserRecommendationPearson {
 	@Test
 	void test1() {
 		int data[][] = {U1,U2,U3,U4,U5,U6,U7,U8,U9,U10,U11,U12,U13,U14,U15,U16,U17,U18,U19,U20,TestU1};
-		Core core = new Core( 21, 8, 3, data);
+		Core core = new Core( 21, 8, 3, data, null);
 		
 		double[] result = core.userToUserRecommendation(20, "pearson");
-		double[] solution = {1.26, 4.041,3.453,3.453,1.562,2.000,2.500,4.062};
+		double[] solution = {1.26, 4.041, 3.453, 3.453, 1.562, 2.000, 2.500, 4.062};
 		
 		for(int item=0; item<result.length; item++) {
 			assertEquals(solution[item],result[item]);
@@ -48,10 +48,10 @@ class UserToUserRecommendationPearson {
 	@Test
 	void test2() {
 		int data[][] = {U1,U2,U3,U4,U5,U6,U7,U8,U9,U10,U11,U12,U13,U14,U15,U16,U17,U18,U19,U20,TestU2};
-		Core core = new Core( 21, 8, 3, data);
+		Core core = new Core( 21, 8, 3, data, null);
 		
 		double[] result = core.userToUserRecommendation(20, "pearson");
-		double[] solution = {2.912,4.138,1.900,0.917,3.787,2.222,1.459,3.668};
+		double[] solution = {2.912, 4.138, 1.900, 0.917, 3.787, 2.222, 1.459, 3.668};
 		
 		for(int item=0; item<result.length; item++) {
 			assertEquals(solution[item],result[item]);
