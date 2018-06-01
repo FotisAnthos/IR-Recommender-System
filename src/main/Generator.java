@@ -39,7 +39,7 @@ public class Generator {
 				data[user][item] = auxList.remove();
 			}
 		}
-		printMatrix(data);
+		//printMatrix(data);
 		return data;
 	}
 

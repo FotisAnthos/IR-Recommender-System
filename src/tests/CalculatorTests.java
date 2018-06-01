@@ -1,14 +1,14 @@
 package tests;
 
 import main.*;
-import static org.junit.jupiter.api.Assertions.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
 import org.junit.jupiter.api.Test;
 
-class CalculatorTests {
+
+class CalculatorTests{
 	
 	@Test
 	void testJaccardSimilarity() {
@@ -77,8 +77,8 @@ class CalculatorTests {
 	void testmeanAbsoluteError() {
 		Calculator calc = new Calculator();
 		
-		double[] nu1 ={3,0,5,4,2,3,0,5};
-		double[] nu2 ={0,5,2,2,4,0,1,3};
+		int[] nu1 ={3,0,5,4,2,3,0,5};
+		int[] nu2 ={0,5,2,2,4,0,1,3};
 		
 		double[] pred1 = {1.260,0,3.453,3.453,1.562,2.000,0,4.062};
 		double[] pred2 = {0,4.284,1.900,1.900,2.844,0,1.939,2.314};
@@ -88,6 +88,21 @@ class CalculatorTests {
 		assertEquals(0.616, calc.meanAbsoluteError(nu2, pred2));
 	}
 	
-	
+	@Test
+	void testCalculateSimilarity() {
+		Calculator calc = new Calculator();
+		
+		int[] u1 = {1,5,0,3,0,0,3,5};
+		int[] u2 = {5,4,0,0,3,2,1,0};
+		int[] nu1 ={3,0,5,4,2,3,0,5};
+		int[] nu2 ={0,5,2,2,4,0,1,3};
+		
+		assertEquals(1.0, calc.calculateSimilarity(u1, nu1, "pearson"));
+		assertEquals(0.189, calc.calculateSimilarity(u2, nu1, "pearson"));
+		assertEquals(0.845, calc.calculateSimilarity(u1, nu2, "pearson"));
+		assertEquals(0.996, calc.calculateSimilarity(u2, nu2, "pearson"));
+		
+		
+	}
 
 }

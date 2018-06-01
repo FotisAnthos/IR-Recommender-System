@@ -10,6 +10,23 @@ public class Calculator {
 	public Calculator() {
 		super();
 	}
+	
+	public double calculateSimilarity(int[] table1, int[] table2, String method) {
+		if(method.equals("jaccard")) {
+			return JaccardSimilarity(table1, table2);
+		}
+		else if(method.equals("cosine")) {
+			return CosineSimilarity(table1, table2);
+		}
+		else if(method.equals("pearson")) {
+			return PeasonCorrelationCoeff(table1, table2);
+		}
+		else {
+			System.out.println("Calculator.java->calculateSimilarity->illegal method declared: " + method);
+			System.exit(6);
+		}
+		return 0.0;
+	}
 
 	public double JaccardSimilarity(int[] table1, int[] table2) {
 		if(table1.length != table2.length) {
@@ -104,7 +121,7 @@ public class Calculator {
 		return result;
 	}
 	
-	public double meanAbsoluteError(double[] realValues, double[] predicted) {
+	public double meanAbsoluteError(int[] realValues, double[] predicted) {
 		if(realValues.length != predicted.length) {
 			System.err.println("Calculator.java->meanAbsoluteError->(realValues.length != predicted.length)");
 			System.exit(5);

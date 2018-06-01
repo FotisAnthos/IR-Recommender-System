@@ -6,39 +6,42 @@ public class Main {
 	public static void main(String[] args) {
 		String input_path;
 
-		boolean debug = true;
-
-		if(!debug) {
+		
+			if(args[0] == null) syntax_message();	
 			input_path = args[0];
-
-			IOHandle io  = new IOHandle(input_path, "");
+			IOHandle io  = new IOHandle(input_path);
 			ArrayList<Integer> conf = io.retrieve();
-			int T = conf.get(0);
-			int N = conf.get(1);
-			int M = conf.get(2);
-			int X = conf.get(3);
-			int K = conf.get(4);
+
+			int iterations = conf.get(0);
+			int usersNumber = conf.get(1);
+			int itemsNumber = conf.get(2);
+			int percentage = conf.get(3);
+			int kneights = conf.get(4);
 			
-			Core theCore = new Core(T, N, M, X, K);
-		}
-		else {
-			int T = 10;
-			int N = 50;
-			int M = 50;
-			int X = 75;
-			int K = 0;
+			Generator generator = new Generator(usersNumber, itemsNumber, percentage);
 
-			Core theCore = new Core(T, N, M, X, K);
-		}
+			for(int iteration=0; iteration<iterations; iteration++) {
+				int data[][] = generator.newMatrix();
+				String folder = "Iteration" + iteration;
+				String description = "InitialMatrix" + iteration;
+				io.writeInitialMatrix(data, folder, description);
+				
+				Core theCore = new Core(usersNumber, itemsNumber, kneights, data, io);
+				theCore.userCollaborativeFiltering("jaccard", iteration);
+				theCore.userCollaborativeFiltering("cosine", iteration);
+				theCore.userCollaborativeFiltering("pearson", iteration);
+			}
 
+		
+		
 
 		return;
 	}
 
 	private static void syntax_message() {
 		System.out.println("Use syntax:\n\n");
-		System.out.println("\trecco <input_file> \n\n");
-		System.out.println("where:\n ");
+		System.out.println("\t<Program_Name> <input_file> \n\n");
+		System.out.println("where parameters are:\n ");
 		System.out.println("\t<input_file> = String indicating the input file.\n");
 
 		System.exit(2);
