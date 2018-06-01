@@ -3,7 +3,9 @@ package main;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class Core {
@@ -24,11 +26,36 @@ public class Core {
 		this.io = io;
 	}
 
-	public void userCollaborativeFiltering() {
+	public void userCollaborativeFiltering(String method, int iteration) {
+		double accumulatedMEA = 0;
+		double temp;
+		List<String> predictionLines = new ArrayList<String>();
+		double[] usersMEA = new double[itemsNumber];
+
+		for(int user=0; user < usersNumber; user++) {
+			double[] pred = new double[itemsNumber];
+			
+			pred = userToUserRecommendation(user, method);
+			predictionLines.add(Arrays.toString(pred));
+			
+			temp = calc.meanAbsoluteError(data[user], pred);
+			usersMEA[user] = temp;
+			accumulatedMEA += temp;
+		}
+		
+		String folder = "Iteration" + iteration + "\\users\\"+ method;
+		String description = "usersMEA" +method+iteration;
+		io.writeLines(predictionLines, folder, description);
+		
+		predictionLines = new ArrayList<String>();
+		predictionLines.add(Double.toString(accumulatedMEA));
+		description = "usersTableMEA" +method + iteration;
+		io.writeLines(predictionLines, folder, description);
 
 	}
 
-	public void itemCollaborativeFiltering() {
+	public void itemCollaborativeFiltering(String method, int iteration) {
+		
 
 	}
 
@@ -64,11 +91,18 @@ public class Core {
 					}
 				}
 			}
-			double result = tempScore / (double)availableScores;
-			BigDecimal bd = new BigDecimal(result);
-			result = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
-			prediction[item] = result;	
+			
+			if(availableScores == 0) {
+				prediction[item] = 0;
+			}
+			else {
+				double result = tempScore / (double)availableScores;
+				BigDecimal bd = new BigDecimal(result);
+				result = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
+				prediction[item] = result;
+			}
 		}
+
 		return prediction;
 	}
 

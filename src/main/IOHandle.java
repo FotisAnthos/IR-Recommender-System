@@ -17,12 +17,18 @@ public class IOHandle {
 
 	private String input_path; 
 	private String output_path;
+	private int iterations;
 	private int usersNumber;
-	private int itemsNumber;;
+	private int itemsNumber;
 
 	public IOHandle(String input_path) {
 		this.input_path = input_path;
 		this.output_path = System.getProperty("user.dir");
+		
+		StringBuilder output = new StringBuilder(output_path);
+		output.append("\\results");
+		this.output_path = output.toString();
+		new File(output.toString()).mkdirs();
 	}
 
 	public ArrayList<Integer> retrieve() {//read problem from input file
@@ -34,7 +40,7 @@ public class IOHandle {
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 
 			String line = bufferedReader.readLine().trim().replaceAll(" ", "");	
-			int iterations = Integer.valueOf(line).intValue();//number of iterations
+			iterations = Integer.valueOf(line).intValue();//number of iterations
 			data.add(iterations);
 
 			line = bufferedReader.readLine().trim().replaceAll(" ", "");
@@ -75,7 +81,7 @@ public class IOHandle {
 		}
 
 		StringBuilder output = new StringBuilder(output_path);
-		output.append(folder);
+		output.append("\\"+ folder);
 		new File(output.toString()).mkdirs();
 		output.append("\\"+ description +".txt");
 		Path file = Paths.get(output.toString());
@@ -101,7 +107,7 @@ public class IOHandle {
 		}
 
 		StringBuilder output = new StringBuilder(output_path);
-		output.append(folder);
+		output.append("\\"+ folder);
 		new File(output.toString()).mkdirs();
 		output.append("\\"+ description +".txt");
 		Path file = Paths.get(output.toString());
@@ -114,15 +120,28 @@ public class IOHandle {
 			return false;
 		}
 	}
-
-	public void Initializer() {
+	
+	public boolean writeLines(List<String> predictionLines, String folder, String description) {
 		StringBuilder output = new StringBuilder(output_path);
-		output.append("\\results");
-		this.output_path = output.toString();
+		output.append("\\"+ folder);
 		new File(output.toString()).mkdirs();
+		output.append("\\"+ description +".txt");
+		Path file = Paths.get(output.toString());
+		try {
+			Files.write(file, predictionLines, Charset.forName("UTF-8"));
+			return true;
+		} catch (IOException e) {
+			System.err.println("IOHandle could not write to output file!!!");
+			e.printStackTrace();
+			return false;
+		}	
 	}
 
 	public String getOutput_path() {
 		return output_path;
+	}
+
+	public int getIterations() {
+		return iterations;
 	}
 }

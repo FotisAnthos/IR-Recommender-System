@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 
+import main.Core;
 import main.Generator;
 import main.IOHandle;
 
@@ -20,7 +21,6 @@ class GeneralTesting {
 	@Test
 	void testInitializer() {
 		io  = new IOHandle(System.getProperty("user.dir") + "\\input1.txt");
-		io.Initializer();
 
 		ArrayList<Integer> conf = io.retrieve();
 		this.iterations = conf.get(0);
@@ -39,9 +39,14 @@ class GeneralTesting {
 
 		for(int iteration=0; iteration<iterations; iteration++) {
 			int data[][] = generator.newMatrix();
-			String folder = "\\Iteration"+iteration;
-			String description = "\\InitialMatrix" + iteration;
+			String folder = "Iteration" + iteration;
+			String description = "InitialMatrix" + iteration;
 			io.writeInitialMatrix(data, folder, description);
+			
+			Core theCore = new Core(usersNumber, itemsNumber, kneights, data, io);
+			theCore.userCollaborativeFiltering("jaccard", iteration);
+			theCore.userCollaborativeFiltering("cosine", iteration);
+			theCore.userCollaborativeFiltering("pearson", iteration);
 		}
 	}
 

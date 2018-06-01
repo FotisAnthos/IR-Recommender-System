@@ -77,8 +77,8 @@ class CalculatorTests{
 	void testmeanAbsoluteError() {
 		Calculator calc = new Calculator();
 		
-		double[] nu1 ={3,0,5,4,2,3,0,5};
-		double[] nu2 ={0,5,2,2,4,0,1,3};
+		int[] nu1 ={3,0,5,4,2,3,0,5};
+		int[] nu2 ={0,5,2,2,4,0,1,3};
 		
 		double[] pred1 = {1.260,0,3.453,3.453,1.562,2.000,0,4.062};
 		double[] pred2 = {0,4.284,1.900,1.900,2.844,0,1.939,2.314};

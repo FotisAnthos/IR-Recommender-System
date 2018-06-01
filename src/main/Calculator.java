@@ -121,7 +121,7 @@ public class Calculator {
 		return result;
 	}
 	
-	public double meanAbsoluteError(double[] realValues, double[] predicted) {
+	public double meanAbsoluteError(int[] realValues, double[] predicted) {
 		if(realValues.length != predicted.length) {
 			System.err.println("Calculator.java->meanAbsoluteError->(realValues.length != predicted.length)");
 			System.exit(5);
