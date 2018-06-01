@@ -27,12 +27,12 @@ public class Core {
 	}
 
 	public void userCollaborativeFiltering(String method, int iteration) {
-		double accumulatedMEA = 0;
+		double accumulatedMEA = 0;//the accumulated Mean Absolute Error of the table
 		double temp;
 		List<String> predictionLines = new ArrayList<String>();
 		double[] usersMEA = new double[itemsNumber];
 
-		for(int user=0; user < usersNumber; user++) {
+		for(int user=0; user < usersNumber; user++) {//for every user, calculate a prediction with method and the Mean Absolute Error for these predictions
 			double[] pred = new double[itemsNumber];
 			
 			pred = userToUserRecommendation(user, method);
@@ -42,7 +42,7 @@ public class Core {
 			usersMEA[user] = temp;
 			accumulatedMEA += temp;
 		}
-		
+		//write to appropriate files
 		String folder = "Iteration" + iteration + "\\users\\"+ method;
 		String description = "usersMEA" +method+iteration;
 		io.writeLines(predictionLines, folder, description);
@@ -55,7 +55,30 @@ public class Core {
 	}
 
 	public void itemCollaborativeFiltering(String method, int iteration) {
+		double accumulatedMEA = 0;//the accumulated Mean Absolute Error of the table
+		double temp;
+		List<String> predictionLines = new ArrayList<String>();
+		double[] itemMEA = new double[itemsNumber];
+
+		for(int user=0; user < usersNumber; user++) {//for every user, calculate a prediction with method and the Mean Absolute Error for these predictions
+			double[] pred = new double[itemsNumber];
+			
+			pred = itemToItemRecommendation(user, method);
+			predictionLines.add(Arrays.toString(pred));
+			
+			temp = calc.meanAbsoluteError(data[user], pred);
+			itemMEA[user] = temp;
+			accumulatedMEA += temp;
+		}
+		//write to appropriate files
+		String folder = "Iteration" + iteration + "\\items\\"+ method;
+		String description = "itemsMEA" +method+iteration;
+		io.writeLines(predictionLines, folder, description);
 		
+		predictionLines = new ArrayList<String>();
+		predictionLines.add(Double.toString(accumulatedMEA));
+		description = "itemsTableMEA" +method + iteration;
+		io.writeLines(predictionLines, folder, description);
 
 	}
 
@@ -121,7 +144,7 @@ public class Core {
 		for(int itID=0; itID < itemsNumber; itID++) {//for every item
 			if(itID != itemID) {//except for the one we are interested in
 				int[] itemData1 = new int[usersNumber];//start empty arrays that will contain all the
-				int[] itemData2 = new int[usersNumber];//-ratings from users
+				int[] itemData2 = new int[usersNumber];//-ratings from users 
 				for(int user=0; user<usersNumber; user++) {
 					if(user != userID) {
 						itemData1[user] = data[user][itemID];//store the rating of user about the item we are interested in
@@ -133,10 +156,11 @@ public class Core {
 			}
 		}
 
-		if(kneighs > pq.size()) {
+		if(kneighs > pq.size()) {//check if there are sufficient neighbors
 			System.err.println("Core.java->itemToItemRecommendationForONEitem>kneighs>pq.size()");
 			System.exit(4);
 		}
+		
 		ArrayList<ContainerClass> kclosest = new ArrayList<ContainerClass>();
 		for(int i=0;i<kneighs;i++) {//make a list just with the neighbors
 			kclosest.add(pq.poll());
@@ -147,7 +171,7 @@ public class Core {
 		int availableScores = 0;
 
 		for(ContainerClass neighbor : kclosest) {
-			if(neighbor.getID() != itemID) {
+			if(neighbor.getID() != itemID) {//calculate the resulting score based on the neighbors'(similar items in this case) ratings 
 				tempScore += (double)data[userID][neighbor.getID()] * neighbor.getScore();
 				availableScores++;
 			}

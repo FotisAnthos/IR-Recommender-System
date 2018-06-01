@@ -47,6 +47,10 @@ class GeneralTesting {
 			theCore.userCollaborativeFiltering("jaccard", iteration);
 			theCore.userCollaborativeFiltering("cosine", iteration);
 			theCore.userCollaborativeFiltering("pearson", iteration);
+			
+			theCore.itemCollaborativeFiltering("jaccard", iteration);
+			theCore.itemCollaborativeFiltering("cosine", iteration);
+			theCore.itemCollaborativeFiltering("pearson", iteration);
 		}
 	}
 
