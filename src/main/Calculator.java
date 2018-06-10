@@ -25,7 +25,7 @@ public class Calculator {
 			System.out.println("Calculator.java->calculateSimilarity->illegal method declared: " + method);
 			System.exit(6);
 		}
-		return 0.0;
+		return -33.33;//this shouldn't happen
 	}
 
 	public double JaccardSimilarity(int[] table1, int[] table2) {

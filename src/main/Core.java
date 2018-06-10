@@ -45,6 +45,8 @@ public class Core {
 			accumulatedMAENumber++;
 		}
 		double tableMAE = accumulatedMAE / (double) accumulatedMAENumber;
+		BigDecimal bd = new BigDecimal(tableMAE);
+		tableMAE = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
 		//write to appropriate files
 		String folder = "Iteration" + iteration + "\\users\\"+ method;
 		String description = "usersMAE" +method+iteration;
@@ -76,6 +78,8 @@ public class Core {
 			accumulatedMAENumber++;
 		}
 		double tableMAE = accumulatedMAE / (double) accumulatedMAENumber;
+		BigDecimal bd = new BigDecimal(tableMAE);
+		tableMAE = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
 		//write to appropriate files
 		String folder = "Iteration" + iteration + "\\items\\"+ method;
 		String description = "itemsMAE" +method+iteration;
