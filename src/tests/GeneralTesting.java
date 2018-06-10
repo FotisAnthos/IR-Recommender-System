@@ -3,6 +3,8 @@ package tests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import main.Core;
@@ -36,6 +38,13 @@ class GeneralTesting {
 		assertEquals(3, this.kneights);
 
 		generator = new Generator(usersNumber, itemsNumber, percentage);
+		
+		ArrayList<Double> userJaccard = new ArrayList<Double>();
+		ArrayList<Double> userCosine = new ArrayList<Double>();
+		ArrayList<Double> userPearson = new ArrayList<Double>();
+		ArrayList<Double> itemJaccard = new ArrayList<Double>();
+		ArrayList<Double> itemCosine = new ArrayList<Double>();
+		ArrayList<Double> itemPearson = new ArrayList<Double>();
 
 		for(int iteration=0; iteration<iterations; iteration++) {
 			int data[][] = generator.newMatrix();
@@ -44,16 +53,30 @@ class GeneralTesting {
 			io.writeInitialMatrix(data, folder, description);
 			
 			Core theCore = new Core(usersNumber, itemsNumber, kneights, data, io);
-			theCore.userCollaborativeFiltering("jaccard", iteration);
-			theCore.userCollaborativeFiltering("cosine", iteration);
-			theCore.userCollaborativeFiltering("pearson", iteration);
+			userJaccard.add(theCore.userCollaborativeFiltering("jaccard", iteration));
+			userCosine.add(theCore.userCollaborativeFiltering("cosine", iteration));
+			userPearson.add(theCore.userCollaborativeFiltering("pearson", iteration));
 			
-			theCore.itemCollaborativeFiltering("jaccard", iteration);
-			theCore.itemCollaborativeFiltering("cosine", iteration);
-			theCore.itemCollaborativeFiltering("pearson", iteration);
+			itemJaccard.add(theCore.itemCollaborativeFiltering("jaccard", iteration));
+			itemCosine.add(theCore.itemCollaborativeFiltering("cosine", iteration));
+			itemPearson.add(theCore.itemCollaborativeFiltering("pearson", iteration));
 		}
+		
+		List<String> results = new ArrayList<String>();
+		results.add("User Collaborative Filtering Mean Absolute Error:");
+		results.add("User - Jaccard: " + userJaccard.toString());
+		results.add("User - Cosine: " + userCosine.toString());
+		results.add("User - Pearson: " + userPearson.toString());
+		
+		results.add("*** *** **** ***");
+		
+		results.add("Item Collaborative Filtering Mean Absolute Error:");
+		results.add("Item - Jaccard: " + itemJaccard.toString());
+		results.add("Item - Cosine: " + itemCosine.toString());
+		results.add("Item - Pearson: " + itemPearson.toString());
+		
+		io.writeLines(results, "", "Results");
 	}
-
-
-
+	
+	
 }

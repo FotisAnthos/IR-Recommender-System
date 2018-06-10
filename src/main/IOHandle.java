@@ -121,14 +121,14 @@ public class IOHandle {
 		}
 	}
 	
-	public boolean writeLines(List<String> predictionLines, String folder, String description) {
+	public boolean writeLines(List<String> lines, String folder, String description) {
 		StringBuilder output = new StringBuilder(output_path);
 		output.append("\\"+ folder);
 		new File(output.toString()).mkdirs();
 		output.append("\\"+ description +".txt");
 		Path file = Paths.get(output.toString());
 		try {
-			Files.write(file, predictionLines, Charset.forName("UTF-8"));
+			Files.write(file, lines, Charset.forName("UTF-8"));
 			return true;
 		} catch (IOException e) {
 			System.err.println("IOHandle could not write to output file!!!");

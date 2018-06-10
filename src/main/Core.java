@@ -26,60 +26,66 @@ public class Core {
 		this.io = io;
 	}
 
-	public void userCollaborativeFiltering(String method, int iteration) {
-		double accumulatedMEA = 0;//the accumulated Mean Absolute Error of the table
+	public Double userCollaborativeFiltering(String method, int iteration) {
+		double accumulatedMAE = 0;//the accumulated Mean Absolute Error of the table
+		int accumulatedMAENumber = 0;
 		double temp;
 		List<String> predictionLines = new ArrayList<String>();
-		double[] usersMEA = new double[itemsNumber];
+		double[] usersMAE = new double[itemsNumber];
 
 		for(int user=0; user < usersNumber; user++) {//for every user, calculate a prediction with method and the Mean Absolute Error for these predictions
 			double[] pred = new double[itemsNumber];
-			
+
 			pred = userToUserRecommendation(user, method);
 			predictionLines.add(Arrays.toString(pred));
-			
+
 			temp = calc.meanAbsoluteError(data[user], pred);
-			usersMEA[user] = temp;
-			accumulatedMEA += temp;
+			usersMAE[user] = temp;
+			accumulatedMAE += temp;
+			accumulatedMAENumber++;
 		}
+		double tableMAE = accumulatedMAE / (double) accumulatedMAENumber;
 		//write to appropriate files
 		String folder = "Iteration" + iteration + "\\users\\"+ method;
-		String description = "usersMEA" +method+iteration;
-		io.writeLines(predictionLines, folder, description);
-		
-		predictionLines = new ArrayList<String>();
-		predictionLines.add(Double.toString(accumulatedMEA));
-		description = "usersTableMEA" +method + iteration;
+		String description = "usersMAE" +method+iteration;
 		io.writeLines(predictionLines, folder, description);
 
+		predictionLines = new ArrayList<String>();
+		predictionLines.add(Double.toString(tableMAE));
+		description = "usersTableMAE" +method + iteration;
+		io.writeLines(predictionLines, folder, description);
+		return tableMAE;
 	}
 
-	public void itemCollaborativeFiltering(String method, int iteration) {
-		double accumulatedMEA = 0;//the accumulated Mean Absolute Error of the table
+	public double itemCollaborativeFiltering(String method, int iteration) {
+		double accumulatedMAE = 0;//the accumulated Mean Absolute Error of the table
+		int accumulatedMAENumber = 0;
 		double temp;
 		List<String> predictionLines = new ArrayList<String>();
-		double[] itemMEA = new double[itemsNumber];
+		double[] itemMAE = new double[itemsNumber];
 
 		for(int user=0; user < usersNumber; user++) {//for every user, calculate a prediction with method and the Mean Absolute Error for these predictions
 			double[] pred = new double[itemsNumber];
-			
+
 			pred = itemToItemRecommendation(user, method);
 			predictionLines.add(Arrays.toString(pred));
-			
+
 			temp = calc.meanAbsoluteError(data[user], pred);
-			itemMEA[user] = temp;
-			accumulatedMEA += temp;
+			itemMAE[user] = temp;
+			accumulatedMAE += temp;
+			accumulatedMAENumber++;
 		}
+		double tableMAE = accumulatedMAE / (double) accumulatedMAENumber;
 		//write to appropriate files
 		String folder = "Iteration" + iteration + "\\items\\"+ method;
-		String description = "itemsMEA" +method+iteration;
-		io.writeLines(predictionLines, folder, description);
-		
-		predictionLines = new ArrayList<String>();
-		predictionLines.add(Double.toString(accumulatedMEA));
-		description = "itemsTableMEA" +method + iteration;
+		String description = "itemsMAE" +method+iteration;
 		io.writeLines(predictionLines, folder, description);
 
+		predictionLines = new ArrayList<String>();
+		predictionLines.add(Double.toString(tableMAE));
+		description = "itemsTableMAE" +method + iteration;
+		io.writeLines(predictionLines, folder, description);
+		return tableMAE;
 	}
 
 	public double[] userToUserRecommendation(int userID, String method) {
@@ -114,7 +120,7 @@ public class Core {
 					}
 				}
 			}
-			
+
 			if(availableScores == 0) {
 				prediction[item] = 0;
 			}
@@ -160,7 +166,7 @@ public class Core {
 			System.err.println("Core.java->itemToItemRecommendationForONEitem>kneighs>pq.size()");
 			System.exit(4);
 		}
-		
+
 		ArrayList<ContainerClass> kclosest = new ArrayList<ContainerClass>();
 		for(int i=0;i<kneighs;i++) {//make a list just with the neighbors
 			kclosest.add(pq.poll());
