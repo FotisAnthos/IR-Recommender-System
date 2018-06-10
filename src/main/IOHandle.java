@@ -125,7 +125,7 @@ public class IOHandle {
 		StringBuilder output = new StringBuilder(output_path);
 		output.append("\\"+ folder);
 		new File(output.toString()).mkdirs();
-		output.append("\\"+ description +".txt");
+		output.append("\\"+ description);
 		Path file = Paths.get(output.toString());
 		try {
 			Files.write(file, lines, Charset.forName("UTF-8"));

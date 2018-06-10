@@ -49,12 +49,12 @@ public class Core {
 		tableMAE = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
 		//write to appropriate files
 		String folder = "Iteration" + iteration + "\\users\\"+ method;
-		String description = "usersMAE" +method+iteration;
+		String description = "usersMAE" +method+iteration+".txt";
 		io.writeLines(predictionLines, folder, description);
 
 		predictionLines = new ArrayList<String>();
 		predictionLines.add(Double.toString(tableMAE));
-		description = "usersTableMAE" +method + iteration;
+		description = "usersTableMAE" +method + iteration+".txt";
 		io.writeLines(predictionLines, folder, description);
 		return tableMAE;
 	}
@@ -82,12 +82,12 @@ public class Core {
 		tableMAE = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
 		//write to appropriate files
 		String folder = "Iteration" + iteration + "\\items\\"+ method;
-		String description = "itemsMAE" +method+iteration;
+		String description = "itemsMAE" +method+iteration+".txt";
 		io.writeLines(predictionLines, folder, description);
 
 		predictionLines = new ArrayList<String>();
 		predictionLines.add(Double.toString(tableMAE));
-		description = "itemsTableMAE" +method + iteration;
+		description = "itemsTableMAE" +method + iteration+".txt";
 		io.writeLines(predictionLines, folder, description);
 		return tableMAE;
 	}
