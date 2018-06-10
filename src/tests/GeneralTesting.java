@@ -1,7 +1,7 @@
 package tests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +31,6 @@ class GeneralTesting {
 		this.percentage = conf.get(3);
 		this.kneights = conf.get(4);
 
-		assertEquals(3, this.iterations);
-		assertEquals(50, this.usersNumber);
-		assertEquals(50, this.itemsNumber);
-		assertEquals(75, this.percentage);
-		assertEquals(3, this.kneights);
-
 		generator = new Generator(usersNumber, itemsNumber, percentage);
 
 		ArrayList<Double> userJaccard = new ArrayList<Double>();
@@ -64,41 +58,78 @@ class GeneralTesting {
 
 		List<String> results = new ArrayList<String>();
 		List<String> resultsxml = new ArrayList<String>();
+		double sumMAE =0;
 		resultsxml.add("<results>");
 		
 		resultsxml.add("<userFilt>");
 		resultsxml.add("<jaccard>");
+		sumMAE = 0;
 		for(double MAE : userJaccard) {
 			resultsxml.add("<r>" + MAE + "</r>");
+			sumMAE += MAE;
 		}
+		double userJaccardMean = sumMAE / (double)iterations;
+		BigDecimal bd = new BigDecimal(userJaccardMean);
+		userJaccardMean = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
+		resultsxml.add("<mean>"+ userJaccardMean +"</mean>");
 		resultsxml.add("</jaccard>");
 		resultsxml.add("<cosine>");
+		sumMAE = 0;
 		for(double MAE : userCosine) {
 			resultsxml.add("<r>" + MAE + "</r>");
+			sumMAE += MAE;
 		}
+		double userCosineMean = sumMAE / (double)iterations;
+		bd = new BigDecimal(userCosineMean);
+		userCosineMean = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
+		resultsxml.add("<mean>"+ userCosineMean +"</mean>");
 		resultsxml.add("</cosine>");
 		resultsxml.add("<pearson>");
+		sumMAE = 0;
 		for(double MAE : userPearson) {
 			resultsxml.add("<r>" + MAE + "</r>");
+			sumMAE += MAE;
 		}
+		double userPearsonMean = sumMAE / (double)iterations;
+		bd = new BigDecimal(userPearsonMean);
+		userPearsonMean = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
+		resultsxml.add("<mean>"+ userPearsonMean +"</mean>");
 		resultsxml.add("</pearson>");
 		resultsxml.add("</userFilt>");
 		
 		resultsxml.add("<itemFilt>");
 		resultsxml.add("<jaccard>");
+		sumMAE = 0;
 		for(double MAE : itemJaccard) {
 			resultsxml.add("<r>" + MAE + "</r>");
+			sumMAE += MAE;
 		}
+		double itemsJaccardMean = sumMAE / (double)iterations;
+		bd = new BigDecimal(itemsJaccardMean);
+		itemsJaccardMean = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
+		resultsxml.add("<mean>"+ itemsJaccardMean +"</mean>");
 		resultsxml.add("</jaccard>");
 		resultsxml.add("<cosine>");
+		sumMAE = 0;
 		for(double MAE : itemCosine) {
 			resultsxml.add("<r>" + MAE + "</r>");
+			sumMAE += MAE;
 		}
+		double itemsCosineMean = sumMAE / (double)iterations;
+		bd = new BigDecimal(itemsCosineMean);
+		itemsCosineMean = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
+		resultsxml.add("<mean>"+ itemsCosineMean +"</mean>");
 		resultsxml.add("</cosine>");
 		resultsxml.add("<pearson>");
+		sumMAE = 0;
 		for(double MAE : itemPearson) {
 			resultsxml.add("<r>" + MAE + "</r>");
+			sumMAE += MAE;
 		}
+		double itemsPearsonMean = sumMAE / (double)iterations;
+		bd = new BigDecimal(itemsPearsonMean);
+		itemsPearsonMean = bd.setScale(3, RoundingMode.HALF_UP).doubleValue();
+		resultsxml.add("<mean>"+ itemsPearsonMean +"</mean>");
 		resultsxml.add("</pearson>");
 		resultsxml.add("</itemFilt>");
 		
@@ -107,16 +138,16 @@ class GeneralTesting {
 
 
 		results.add("User Collaborative Filtering Mean Absolute Error:");
-		results.add("User - Jaccard: " + userJaccard.toString());
-		results.add("User - Cosine: " + userCosine.toString());
-		results.add("User - Pearson: " + userPearson.toString());
+		results.add("User - Jaccard: " + userJaccard.toString() + " Mean: " +userJaccardMean);
+		results.add("User - Cosine: " + userCosine.toString() + " Mean: " +userCosineMean);
+		results.add("User - Pearson: " + userPearson.toString() + " Mean: " +userPearsonMean);
 
 		results.add("*** *** **** ***");
 
 		results.add("Item Collaborative Filtering Mean Absolute Error:");
-		results.add("Item - Jaccard: " + itemJaccard.toString());
-		results.add("Item - Cosine: " + itemCosine.toString());
-		results.add("Item - Pearson: " + itemPearson.toString());
+		results.add("Item - Jaccard: " + itemJaccard.toString() + " Mean: " +itemsJaccardMean);
+		results.add("Item - Cosine: " + itemCosine.toString() + " Mean: " +itemsCosineMean);
+		results.add("Item - Pearson: " + itemPearson.toString() + " Mean: " +itemsPearsonMean);
 
 		io.writeLines(results, "", "Results.txt");
 		io.writeLines(resultsxml, "", "Results.xml");
